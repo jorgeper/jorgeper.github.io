@@ -1,0 +1,29 @@
+# Site settings
+title: Supplements
+description: List of supplements
+author: jorgeper
+
+# Build settings
+markdown: kramdown
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+# URL settings
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "" # the base hostname & protocol, e.g. http://example.com
+
+# Social media
+github_username: jorgeper
+# twitter_username: your-twitter-username
+# linkedin_username: your-linkedin-username
+
+# Exclude files from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - .git
+  - README.md
