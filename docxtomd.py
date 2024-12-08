@@ -47,6 +47,22 @@ class DocxTableConverter:
         """Convert a single table to markdown format with preserved formatting"""
         markdown_rows = []
         
+        # Add CSS for table width and alignment
+        style_row = '''<style>
+        table {
+            width: 100%;
+            table-layout: fixed;
+        }
+        td, th {
+            vertical-align: top !important;
+            word-wrap: break-word;
+            padding: 8px;
+        }
+    </style>
+
+    '''
+        markdown_rows.append(style_row)
+        
         # Get headers
         headers = []
         for cell in table.rows[0].cells:
@@ -54,12 +70,6 @@ class DocxTableConverter:
         markdown_rows.append('| ' + ' | '.join(headers) + ' |')
         
         # Add separator row with alignment
-        # Using HTML style alignment to force top alignment
-        column_count = len(headers)
-        style_row = '<style>\n  td, th {\n    vertical-align: top !important;\n  }\n</style>\n'
-        markdown_rows.insert(0, style_row)
-        
-        # Add standard separator row
         separator = '|' + '|'.join(['---' for _ in headers]) + '|'
         markdown_rows.append(separator)
         
