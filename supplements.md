@@ -14,7 +14,7 @@
         }
         /* Set width for second column */
         th:nth-child(2), td:nth-child(2) {
-            width: 40px;
+            width: 80px;
         }
         /* Third column will automatically take remaining space */
     </style>
