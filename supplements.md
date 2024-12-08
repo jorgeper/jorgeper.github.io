@@ -1,8 +1,3 @@
-# Converted Tables
-
-
-### Table 1
-
 <style>
         table {
             width: 100%;
