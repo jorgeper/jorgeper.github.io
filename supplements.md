@@ -10,7 +10,7 @@
         }
         /* Set width for first column */
         th:nth-child(1), td:nth-child(1) {
-            width: 100px;
+            width: 140px;
         }
         /* Set width for second column */
         th:nth-child(2), td:nth-child(2) {
@@ -19,7 +19,7 @@
         /* Third column will automatically take remaining space */
     </style>
     
-| **Supplement** | **Serv.** | **Facts** |
+| **Supplement** | **Servings** | **Facts** |
 |---|---|---|
 | Momentous Omega-3 | 2 | **N-Acetyl-Cysteine** 1200 mg<br>**Ginger extract** 400 mg<br>**Curcumin extract** 250 mg |
 | Vitamin D | 1 | **Vitamin D** 50 mcg (2000 IU) |
