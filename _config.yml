@@ -10,6 +10,10 @@ plugins:
   - jekyll-feed
   - jekyll-seo-tag
 
+# Theme settings
+header_pages: []  # This will remove the header navigation
+author_show: false  # This will hide the author name in the footer
+
 # URL settings
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol, e.g. http://example.com
