@@ -1,9 +1,15 @@
 <style>
-  td, th {
-    vertical-align: top !important;
-  }
-</style>
-
+        table {
+            width: 100%;
+            table-layout: fixed;
+        }
+        td, th {
+            vertical-align: top !important;
+            word-wrap: break-word;
+            padding: 8px;
+        }
+    </style>
+    
 | **Brand** | **Supplement** | **Servings** | **Facts** | **Notes** | **Chatgpt** |
 |---|---|---|---|---|---|
 | Momentous | Omega-3 | 2 | * EPA 800 mg<br>* DHA 800mg |  | **Omega-3** : Supports heart health, reduces inflammation, promotes brain function, and improves joint health. Commonly found in fish oil and flaxseed. |
