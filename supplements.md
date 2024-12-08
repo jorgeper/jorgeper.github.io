@@ -10,11 +10,13 @@
         }
         /* Set width for first column */
         th:nth-child(1), td:nth-child(1) {
-            width: 100px;  /* Approximately 20 characters in most fonts */
+            width: 100px;
+        }
         /* Set width for second column */
         th:nth-child(2), td:nth-child(2) {
-            width: 40px;  /* Changed from 120px to 40px */
+            width: 40px;
         }
+        /* Third column will automatically take remaining space */
     </style>
     
 | **Supplement** | **Serv.** | **Chatgpt** |
