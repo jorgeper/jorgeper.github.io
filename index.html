@@ -10,7 +10,7 @@
     // The saved choice is used if there is one. Otherwise, or if the choice is
     // "random", each visit gets a random theme.
     (function () {
-      var themes = ['plain', 'dos', 'win95', 'mac', 'c64', 'teletext', 'trek', 'starwars',
+      var themes = ['plain', 'dos', 'win95', 'mac', 'c64', 'spectrum', 'cpc', 'teletext', 'tos', 'trek', 'starwars',
         'wargames', 'tron', 'alien', 'bladerunner', 'terminator', 'bttf'];
       var choice = null;
       try { choice = localStorage.getItem('theme'); } catch (e) {}
@@ -38,7 +38,7 @@
 
     /* ---------- Theme picker ---------- */
     #themes { position: fixed; top: 0.75rem; right: 0.75rem; z-index: 10; text-align: right; }
-    #themes button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+    #themes button { color: inherit; background: none; border: 0; cursor: pointer; }
     #theme-button { padding: 0.25rem 0.5rem; opacity: 0.4; font: 1.125rem/1 system-ui, sans-serif; }
     #theme-button:hover, #theme-button:focus-visible, #theme-button[aria-expanded="true"] { opacity: 1; }
     #theme-menu {
@@ -46,7 +46,7 @@
       background: Canvas; color: CanvasText; border: 1px solid; font-size: 0.9375rem;
     }
     #theme-menu[hidden] { display: none; }
-    #theme-menu button { text-align: left; padding: 0.25rem 0.75rem 0.25rem 0.25rem; white-space: nowrap; }
+    #theme-menu button { font: inherit; text-align: left; padding: 0.25rem 0.75rem 0.25rem 0.25rem; white-space: nowrap; }
     #theme-menu button::before { content: "✓"; display: inline-block; width: 1.25em; visibility: hidden; }
     #theme-menu button[aria-pressed="true"]::before { visibility: visible; }
     #theme-menu button[data-shown]::before { content: "\2022"; visibility: visible; }
@@ -122,7 +122,7 @@
     }
     html[data-theme="win95"] #theme-menu button:hover, html[data-theme="win95"] #theme-menu button:focus-visible { background: #000080; color: #fff; }
 
-    /* ---------- Star Trek ---------- */
+    /* ---------- Star Trek: The Next Generation ---------- */
     html[data-theme="trek"] { color-scheme: dark; }
     html[data-theme="trek"] body {
       max-width: 44rem; padding: 3.5rem 1.25rem;
@@ -449,6 +449,104 @@
     html[data-theme="bttf"] .links li:nth-child(3n+2) a { color: #fc3; text-shadow: 0 0 0.5rem #f90; }
     html[data-theme="bttf"] .links li:nth-child(3n) a { color: #ff3b1f; text-shadow: 0 0 0.5rem #f00; }
     html[data-theme="bttf"] .links a:hover, html[data-theme="bttf"] .links a:focus-visible { filter: brightness(1.5); outline: none; }
+    /* ---------- Star Trek: The Original Series ---------- */
+    html[data-theme="tos"] { color-scheme: dark; }
+    html[data-theme="tos"] body {
+      max-width: 44rem; padding: 3.5rem 1.25rem; min-height: 100vh; box-sizing: border-box;
+      background-color: #000;
+      background-image:
+        radial-gradient(1.5px 1.5px at 2rem 3rem, #fff, transparent),
+        radial-gradient(1px 1px at 7rem 11rem, #fff, transparent),
+        radial-gradient(1.5px 1.5px at 12rem 5rem, #cdf, transparent),
+        radial-gradient(1px 1px at 15rem 14rem, #fff, transparent),
+        radial-gradient(1px 1px at 4rem 15rem, #ffd, transparent),
+        radial-gradient(1px 1px at 10rem 1rem, #fff, transparent);
+      background-size: 17rem 17rem;
+      color: #e8e8e8;
+      font: 500 1rem/1.4 "Jost", "Futura", "Century Gothic", "Trebuchet MS", sans-serif;
+    }
+    html[data-theme="tos"] h1 {
+      margin: 0 0 2rem; color: #ffd21f; text-align: center; text-transform: uppercase;
+      font-style: italic; font-weight: 700; font-size: 3rem; line-height: 1.1; letter-spacing: 0.12em;
+    }
+    html[data-theme="tos"] .content {
+      padding: 1.5rem; background: linear-gradient(#2a2b2e, #141416);
+      border: 1px solid #000; border-top: 0.6rem solid #9a9da1; border-radius: 0.4rem; box-shadow: inset 0 2px 0 #55585c;
+    }
+    html[data-theme="tos"] .links li { --jewel: #e23b2e; display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 1rem; margin: 0 0 1rem; }
+    html[data-theme="tos"] .links li:nth-child(4n+2) { --jewel: #f5c400; }
+    html[data-theme="tos"] .links li:nth-child(4n+3) { --jewel: #2f8fe0; }
+    html[data-theme="tos"] .links li:nth-child(4n) { --jewel: #3fbf5a; }
+    html[data-theme="tos"] .links a {
+      flex: none; box-sizing: border-box; width: 15rem; max-width: 100%; padding: 0.7rem 0.75rem;
+      border: 2px solid #000; border-radius: 0.3rem; text-align: center;
+      background: linear-gradient(rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 45%), var(--jewel);
+      box-shadow: 0 0 0.8rem var(--jewel), inset 0 -0.25rem 0.4rem rgba(0, 0, 0, 0.35);
+      color: #000; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; text-decoration: none;
+    }
+    html[data-theme="tos"] .links a:hover, html[data-theme="tos"] .links a:focus-visible { filter: brightness(1.3); outline: none; }
+    html[data-theme="tos"] .links span { flex: 1 1 12rem; opacity: 1; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; }
+    html[data-theme="tos"] .prompt {
+      display: block; height: 1rem; margin: 1.5rem 0 0;
+      background: repeating-linear-gradient(90deg, #e23b2e 0 1rem, transparent 1rem 1.5rem, #f5c400 1.5rem 2.5rem, transparent 2.5rem 3rem, #2f8fe0 3rem 4rem, transparent 4rem 4.5rem, #3fbf5a 4.5rem 5.5rem, transparent 5.5rem 6rem);
+      animation: lights 3s steps(1) infinite;
+    }
+    @keyframes lights { 33% { filter: hue-rotate(120deg); } 66% { filter: hue-rotate(240deg); } }
+
+    /* ---------- ZX Spectrum ---------- */
+    html[data-theme="spectrum"] {
+      color-scheme: light;
+      background: repeating-linear-gradient(#d70000 0 1.2rem, #00d7d7 1.2rem 2.4rem);
+      animation: tape 1.2s linear infinite;
+    }
+    @keyframes tape { to { background-position: 0 2.4rem; } }
+    html[data-theme="spectrum"] body {
+      position: relative; max-width: none; margin: 2.5rem; padding: 1.5rem 1.5rem 4rem; min-height: calc(100vh - 5rem); box-sizing: border-box;
+      background: #d7d7d7; color: #000;
+      font: 1.25rem/1.4 "DotGothic16", Consolas, Menlo, monospace;
+    }
+    html[data-theme="spectrum"] h1 {
+      margin: 0 0 1.4em; padding: 0.2em 0.5em; font: inherit; color: #fff;
+      background: linear-gradient(115deg, #000 calc(100% - 9rem), #d70000 0 calc(100% - 7.5rem), #d7d700 0 calc(100% - 6rem), #00d700 0 calc(100% - 4.5rem), #00d7d7 0 calc(100% - 3rem), #000 0);
+    }
+    html[data-theme="spectrum"] .links li { margin: 0 0 1.4em; }
+    html[data-theme="spectrum"] .links a { color: #0000d7; font-weight: normal; text-decoration: none; }
+    html[data-theme="spectrum"] .links a:hover, html[data-theme="spectrum"] .links a:focus-visible { background: #0000d7; color: #d7d7d7; outline: none; }
+    html[data-theme="spectrum"] .links span { opacity: 1; font-size: inherit; }
+    html[data-theme="spectrum"] .prompt { display: block; position: absolute; left: 1.5rem; bottom: 1rem; margin: 0; }
+    html[data-theme="spectrum"] .prompt::before { content: "0 OK, 0:1"; }
+    html[data-theme="spectrum"] #theme-button { opacity: 1; background: #d7d7d7; color: #000; }
+    @media (max-width: 40rem) {
+      html[data-theme="spectrum"] body { margin: 1rem; padding: 1rem 1rem 3.5rem; min-height: calc(100vh - 2rem); font-size: 1rem; }
+      html[data-theme="spectrum"] .prompt { left: 1rem; }
+    }
+
+    /* ---------- Amstrad CPC 464 ---------- */
+    html[data-theme="cpc"] { color-scheme: dark; }
+    html[data-theme="cpc"] body {
+      max-width: none; margin: 0; padding: 2rem 1.5rem; min-height: 100vh; box-sizing: border-box;
+      background: #000080; color: #ff0;
+      font: 0.8rem/1.7 "Press Start 2P", monospace;
+    }
+    html[data-theme="cpc"] main::before {
+      content: " Amstrad 64K Microcomputer  (v1)\A\A  \A9 1984 Amstrad Consumer Electronics plc\A            and Locomotive Software Ltd.\A\A  BASIC 1.0\A\A Ready";
+      display: block; white-space: pre-wrap; margin-bottom: 1.7em;
+    }
+    html[data-theme="cpc"] h1 { display: table; margin: 0 0 1.7em; padding: 0 0.5em; font: inherit; background: #ff0; color: #000080; }
+    html[data-theme="cpc"] .links li { margin: 0 0 1.7em; }
+    html[data-theme="cpc"] .links a { color: #0ff; font-weight: normal; text-decoration: none; }
+    html[data-theme="cpc"] .links a::before { content: 'run"'; color: #ff0; }
+    html[data-theme="cpc"] .links a:hover, html[data-theme="cpc"] .links a:focus-visible { background: #f00; color: #ff0; outline: none; }
+    html[data-theme="cpc"] .links span { opacity: 1; font-size: inherit; }
+    html[data-theme="cpc"] .prompt { display: block; margin: 0; white-space: pre; }
+    html[data-theme="cpc"] .prompt::before { content: "Ready\A "; }
+    html[data-theme="cpc"] .prompt::after { content: "\2588"; }
+    html[data-theme="cpc"] #theme-button { opacity: 0.8; color: #ff0; }
+    html[data-theme="cpc"] #theme-menu { background: #000080; color: #ff0; border-color: #ff0; font-size: 0.6rem; }
+    html[data-theme="cpc"] #theme-menu button:hover, html[data-theme="cpc"] #theme-menu button:focus-visible { background: #ff0; color: #000080; }
+    @media (max-width: 40rem) {
+      html[data-theme="cpc"] body { padding: 1rem 0.75rem; font-size: 0.55rem; }
+    }
   </style>
 </head>
 <body>
@@ -462,8 +560,11 @@
       <button type="button" data-theme="win95">Windows 95</button>
       <button type="button" data-theme="mac">Macintosh 1984</button>
       <button type="button" data-theme="c64">Commodore 64</button>
+      <button type="button" data-theme="spectrum">ZX Spectrum</button>
+      <button type="button" data-theme="cpc">Amstrad CPC 464</button>
       <button type="button" data-theme="teletext">Teletext</button>
-      <button type="button" data-theme="trek">Star Trek</button>
+      <button type="button" data-theme="tos">Star Trek: The Original Series</button>
+      <button type="button" data-theme="trek">Star Trek: The Next Generation</button>
       <button type="button" data-theme="starwars">Star Wars</button>
       <button type="button" data-theme="wargames">WarGames</button>
       <button type="button" data-theme="tron">Tron</button>
@@ -505,7 +606,10 @@
         tron: 'Orbitron:wght@400;700',
         bladerunner: 'Share+Tech+Mono',
         terminator: 'Share+Tech+Mono',
-        c64: 'Sixtyfour'
+        c64: 'Sixtyfour',
+        spectrum: 'DotGothic16',
+        cpc: 'Press+Start+2P',
+        tos: 'Jost:ital,wght@0,500;1,700'
       };
       var state = window.themeState;
       var root = document.documentElement;
