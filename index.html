@@ -6,11 +6,19 @@
   <title>Jorge Pereira</title>
   <meta name="description" content="Things Jorge Pereira has been making.">
   <script>
-    // Apply the saved theme before the page paints, so it does not flash the plain one.
-    try {
-      var saved = localStorage.getItem('theme');
-      if (saved && saved !== 'plain') document.documentElement.setAttribute('data-theme', saved);
-    } catch (e) {}
+    // Pick the theme before the page paints, so it does not flash the plain one.
+    // The saved choice is used if there is one. Otherwise, or if the choice is
+    // "random", each visit gets a random theme.
+    (function () {
+      var themes = ['plain', 'dos', 'win95', 'mac', 'c64', 'teletext', 'trek', 'starwars',
+        'wargames', 'tron', 'alien', 'bladerunner', 'terminator', 'bttf'];
+      var choice = null;
+      try { choice = localStorage.getItem('theme'); } catch (e) {}
+      if (themes.indexOf(choice) < 0) choice = 'random';
+      var shown = choice === 'random' ? themes[Math.floor(Math.random() * themes.length)] : choice;
+      if (shown !== 'plain') document.documentElement.setAttribute('data-theme', shown);
+      window.themeState = { themes: themes, choice: choice, shown: shown };
+    })();
   </script>
   <style>
     /* ---------- Plain (the default) ---------- */
@@ -21,8 +29,7 @@
       padding: 4rem 1.25rem;
       font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
     }
-    h1 { font-size: 1.75rem; margin: 0 0 0.25rem; }
-    .tagline { margin: 0 0 2rem; opacity: 0.7; }
+    h1 { font-size: 1.75rem; margin: 0 0 2rem; }
     .links { list-style: none; margin: 0; padding: 0; }
     .links li { margin: 0 0 1rem; }
     .links a { font-weight: 600; }
@@ -32,7 +39,7 @@
     /* ---------- Theme picker ---------- */
     #themes { position: fixed; top: 0.75rem; right: 0.75rem; z-index: 10; text-align: right; }
     #themes button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
-    #theme-button { padding: 0.25rem 0.5rem; opacity: 0.4; font-size: 1.125rem; line-height: 1; }
+    #theme-button { padding: 0.25rem 0.5rem; opacity: 0.4; font: 1.125rem/1 system-ui, sans-serif; }
     #theme-button:hover, #theme-button:focus-visible, #theme-button[aria-expanded="true"] { opacity: 1; }
     #theme-menu {
       display: flex; flex-direction: column; margin-top: 0.25rem; padding: 0.25rem;
@@ -42,6 +49,7 @@
     #theme-menu button { text-align: left; padding: 0.25rem 0.75rem 0.25rem 0.25rem; white-space: nowrap; }
     #theme-menu button::before { content: "✓"; display: inline-block; width: 1.25em; visibility: hidden; }
     #theme-menu button[aria-pressed="true"]::before { visibility: visible; }
+    #theme-menu button[data-shown]::before { content: "\2022"; visibility: visible; }
     #theme-menu button:hover, #theme-menu button:focus-visible { background: CanvasText; color: Canvas; outline: none; }
 
     /* ---------- MS-DOS 5.0 ---------- */
@@ -52,8 +60,7 @@
       font: 1.5rem/1.2 "VT323", "Perfect DOS VGA 437", Consolas, Menlo, monospace;
     }
     html[data-theme="dos"] main::before { content: "C:\\>type home.txt"; display: block; margin-bottom: 1.2em; }
-    html[data-theme="dos"] h1 { font: inherit; color: #fff; text-transform: uppercase; margin: 0; }
-    html[data-theme="dos"] .tagline { opacity: 1; margin: 0 0 1.2em; }
+    html[data-theme="dos"] h1 { font: inherit; color: #fff; text-transform: uppercase; margin: 0 0 1.2em; }
     html[data-theme="dos"] .links li { margin: 0 0 1.2em; }
     html[data-theme="dos"] .links a { color: #ff5; font-weight: normal; text-decoration: none; }
     html[data-theme="dos"] .links a::before { content: "\25BA  "; color: #aaa; }
@@ -88,7 +95,6 @@
       box-shadow: inset -1px -1px #000, inset 1px 1px #fff, inset -2px -2px #808080, inset 2px 2px #dfdfdf;
     }
     html[data-theme="win95"] .content { padding: 12px; }
-    html[data-theme="win95"] .tagline { opacity: 1; margin: 0 0 12px; }
     html[data-theme="win95"] .links {
       padding: 10px; background: #fff;
       box-shadow: inset 1px 1px #808080, inset -1px -1px #fff, inset 2px 2px #000, inset -2px -2px #dfdfdf;
@@ -136,8 +142,7 @@
       content: "47-1138"; position: absolute; left: -5rem; bottom: 0.5rem; width: 5rem;
       box-sizing: border-box; padding-right: 0.5rem; text-align: right; color: #000; font-size: 1rem;
     }
-    html[data-theme="trek"] h1 { margin: 0; text-align: right; color: #f90; font-size: 2.75rem; font-weight: 400; line-height: 1.1; }
-    html[data-theme="trek"] .tagline { opacity: 1; margin: 0 0 2rem; text-align: right; color: #99f; }
+    html[data-theme="trek"] h1 { margin: 0 0 2rem; text-align: right; color: #f90; font-size: 2.75rem; font-weight: 400; line-height: 1.1; }
     html[data-theme="trek"] .links li { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 1rem; margin: 0 0 0.75rem; }
     html[data-theme="trek"] .links a {
       flex: none; box-sizing: border-box; width: 15rem; max-width: 100%; padding: 0.2rem 1.25rem; border-radius: 99rem; text-align: right;
@@ -154,25 +159,324 @@
       html[data-theme="trek"] main { border-left-width: 2rem; padding-left: 1rem; }
       html[data-theme="trek"] main::after { display: none; }
     }
+    /* ---------- Shared by the themes below ---------- */
+    #theme-menu { max-height: calc(100vh - 4rem); overflow: auto; }
+    @property --tick-a { syntax: "<integer>"; initial-value: 0; inherits: false; }
+    @property --tick-b { syntax: "<integer>"; initial-value: 0; inherits: false; }
+    @font-face {
+      font-family: "DSEG14";
+      src: url("https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG14-Classic/DSEG14Classic-Regular.woff2") format("woff2");
+      font-display: swap;
+    }
+    @keyframes appear { from { opacity: 0; } }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; }
+    }
+
+    /* ---------- Macintosh 1984 ---------- */
+    html[data-theme="mac"] { color-scheme: light; }
+    html[data-theme="mac"] body {
+      max-width: none; margin: 0; padding: 4rem 1rem 2rem; min-height: 100vh; box-sizing: border-box;
+      background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2' height='2'%3E%3Cpath d='M0 0h1v1H0zM1 1h1v1H1z'/%3E%3C/svg%3E"); color: #000;
+      font: 13px/1.4 Chicago, "ChicagoFLF", Geneva, Verdana, sans-serif;
+    }
+    html[data-theme="mac"] body::before {
+      content: "File     Edit     View     Special"; white-space: pre;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 5; box-sizing: border-box;
+      height: 26px; line-height: 24px; padding-left: 1.5rem;
+      background: #fff; border-bottom: 2px solid #000; font-weight: bold;
+    }
+    html[data-theme="mac"] main { max-width: 30rem; margin: 0 auto; background: #fff; border: 2px solid #000; box-shadow: 2px 2px 0 #000; }
+    html[data-theme="mac"] h1 {
+      position: relative; margin: 0; padding: 4px 3px; border-bottom: 2px solid #000;
+      font-size: 13px; line-height: 15px; text-align: center;
+      background: linear-gradient(#fff, #fff) center / 10em 100% no-repeat, repeating-linear-gradient(#fff 0 2px, #000 2px 3px);
+      background-clip: content-box;
+    }
+    html[data-theme="mac"] h1::before {
+      content: ""; position: absolute; left: 10px; top: 50%; width: 11px; height: 11px; margin-top: -7px;
+      background: #fff; border: 1px solid #000; box-shadow: 0 0 0 2px #fff;
+    }
+    html[data-theme="mac"] .content { padding: 1rem 1rem 1.25rem; }
+    html[data-theme="mac"] .links { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.25rem 1rem; }
+    html[data-theme="mac"] .links li { width: 11rem; margin: 0; text-align: center; }
+    html[data-theme="mac"] .links a { display: inline-block; padding: 3px 4px 1px; color: #000; font-weight: bold; text-decoration: none; }
+    html[data-theme="mac"] .links a::before {
+      content: ""; display: block; width: 30px; height: 38px; margin: 0 auto 5px;
+      border: 2px solid #000; background: linear-gradient(225deg, #000 8px, #fff 8px);
+    }
+    html[data-theme="mac"] .links a:hover, html[data-theme="mac"] .links a:focus-visible { background: #000; color: #fff; outline: none; }
+    html[data-theme="mac"] .links a:hover::before, html[data-theme="mac"] .links a:focus-visible::before { filter: invert(1); }
+    html[data-theme="mac"] .links span { opacity: 1; font-size: 11px; margin-top: 3px; }
+    html[data-theme="mac"] #themes { top: 0; right: 0.5rem; }
+    html[data-theme="mac"] #theme-button { opacity: 1; padding: 5px 8px; font-size: 14px; }
+    html[data-theme="mac"] #theme-menu { margin-top: 0; background: #fff; color: #000; border: 2px solid #000; box-shadow: 2px 2px 0 #000; font-size: inherit; font-weight: bold; }
+    html[data-theme="mac"] #theme-menu button:hover, html[data-theme="mac"] #theme-menu button:focus-visible { background: #000; color: #fff; }
+
+    /* ---------- Commodore 64 ---------- */
+    html[data-theme="c64"] { color-scheme: dark; background: #7c70da; }
+    html[data-theme="c64"] body {
+      max-width: none; margin: 2.5rem; padding: 1.5rem; min-height: calc(100vh - 5rem); box-sizing: border-box;
+      background: #3e31a2; color: #a9a0f5;
+      font: 0.8rem/1.6 "Sixtyfour", "Press Start 2P", monospace; text-transform: uppercase;
+    }
+    html[data-theme="c64"] main::before {
+      content: "**** COMMODORE 64 BASIC V2 ****\A\A 64K RAM SYSTEM  38911 BASIC BYTES FREE\A\A READY.\A LIST\A\A ";
+      display: block; white-space: pre-wrap;
+    }
+    html[data-theme="c64"] h1 { font: inherit; margin: 0 0 1.6em; }
+    html[data-theme="c64"] h1::before { content: "10 REM "; }
+    html[data-theme="c64"] .links li { margin: 0 0 1.6em; }
+    html[data-theme="c64"] .links a { color: #fff; font-weight: normal; text-decoration: none; }
+    html[data-theme="c64"] .links a::before { content: 'LOAD "'; }
+    html[data-theme="c64"] .links a::after { content: '",8,1'; }
+    html[data-theme="c64"] .links a:hover, html[data-theme="c64"] .links a:focus-visible { background: #a9a0f5; color: #3e31a2; outline: none; }
+    html[data-theme="c64"] .links span { opacity: 1; font-size: inherit; }
+    html[data-theme="c64"] .links span::before { content: "REM "; }
+    html[data-theme="c64"] .prompt { display: block; margin: 0; white-space: pre; }
+    html[data-theme="c64"] .prompt::before { content: "READY.\A "; }
+    html[data-theme="c64"] .prompt::after { content: "\2588"; animation: blink 1s steps(1) infinite; }
+    html[data-theme="c64"] #theme-button { opacity: 0.8; color: #3e31a2; }
+    html[data-theme="c64"] #theme-menu { background: #3e31a2; color: #a9a0f5; border-color: #a9a0f5; font-size: 0.6rem; }
+    html[data-theme="c64"] #theme-menu button:hover, html[data-theme="c64"] #theme-menu button:focus-visible { background: #a9a0f5; color: #3e31a2; }
+    @media (max-width: 40rem) {
+      html[data-theme="c64"] body { margin: 1rem; padding: 0.75rem; min-height: calc(100vh - 2rem); font-size: 0.55rem; }
+    }
+
+    /* ---------- Teletext ---------- */
+    html[data-theme="teletext"] { color-scheme: dark; }
+    html[data-theme="teletext"] body {
+      max-width: 40ch; padding: 1.5rem 1rem; background: #000; color: #fff;
+      font: 1.7rem/1.15 "VT323", Consolas, Menlo, monospace;
+    }
+    html[data-theme="teletext"] main::before { content: "P100    HOME    100"; display: block; white-space: pre; margin-bottom: 0.5em; }
+    html[data-theme="teletext"] h1 {
+      margin: 0 0 0.8em; padding: 0.1em 0.3em; background: #00f; color: #ff0;
+      font: inherit; font-size: 2em; line-height: 1; text-transform: uppercase;
+    }
+    html[data-theme="teletext"] .links { counter-reset: page 100; }
+    html[data-theme="teletext"] .links li { counter-increment: page; margin: 0 0 0.8em; }
+    html[data-theme="teletext"] .links a { display: flex; justify-content: space-between; gap: 1ch; color: #fff; font-weight: normal; text-decoration: none; }
+    html[data-theme="teletext"] .links a::after { content: counter(page); color: #ff0; }
+    html[data-theme="teletext"] .links a:hover, html[data-theme="teletext"] .links a:focus-visible { background: #fff; color: #000; outline: none; }
+    html[data-theme="teletext"] .links span { opacity: 1; font-size: inherit; color: #0f0; }
+    html[data-theme="teletext"] .prompt {
+      display: block; height: 1em; margin: 1.5em 0 0;
+      background: linear-gradient(90deg, #f00 0 25%, #0f0 0 50%, #ff0 0 75%, #0ff 0);
+    }
+
+    /* ---------- Star Wars ---------- */
+    html[data-theme="starwars"] { color-scheme: dark; }
+    html[data-theme="starwars"] body {
+      max-width: none; margin: 0; padding: 3rem 1rem 2rem; min-height: 100vh; box-sizing: border-box; overflow-x: hidden;
+      background-color: #000;
+      background-image:
+        radial-gradient(1.5px 1.5px at 2rem 3rem, #fff, transparent),
+        radial-gradient(1px 1px at 7rem 11rem, #fff, transparent),
+        radial-gradient(1.5px 1.5px at 12rem 5rem, #cdf, transparent),
+        radial-gradient(1px 1px at 15rem 14rem, #fff, transparent),
+        radial-gradient(1px 1px at 4rem 15rem, #ffd, transparent),
+        radial-gradient(1px 1px at 10rem 1rem, #fff, transparent);
+      background-size: 17rem 17rem;
+      color: #ffe81f; text-align: center;
+      font: 700 1.75rem/1.4 "Libre Franklin", "Franklin Gothic Medium", "Helvetica Neue", Arial, sans-serif;
+    }
+    html[data-theme="starwars"] body::before {
+      content: "A long time ago, in a browser far,\A far away...."; white-space: pre-line; display: block;
+      margin-bottom: 2rem; color: #4bd5ee; font-weight: 400; font-size: 1.1rem;
+    }
+    html[data-theme="starwars"] main {
+      max-width: 34rem; margin: 0 auto;
+      transform: perspective(30rem) rotateX(24deg); transform-origin: 50% 100%;
+      animation: crawl 7s ease-out both;
+    }
+    @keyframes crawl { from { transform: perspective(30rem) rotateX(24deg) translateY(70%); opacity: 0; } }
+    html[data-theme="starwars"] h1 { margin: 0 0 1.5rem; font-size: 3rem; line-height: 1.2; text-transform: uppercase; letter-spacing: 0.05em; }
+    html[data-theme="starwars"] .links li { margin: 0 0 1.5rem; }
+    html[data-theme="starwars"] .links a { color: #ffe81f; }
+    html[data-theme="starwars"] .links a:hover, html[data-theme="starwars"] .links a:focus-visible { color: #fff; outline: none; }
+    html[data-theme="starwars"] .links span { opacity: 1; font-size: 1.3rem; }
+    html[data-theme="starwars"] #themes { text-align: right; font-weight: 400; }
+
+    /* ---------- WarGames ---------- */
+    html[data-theme="wargames"] { color-scheme: dark; }
+    html[data-theme="wargames"] body {
+      max-width: none; margin: 0; padding: 2rem 1.5rem; min-height: 100vh; box-sizing: border-box;
+      background: #020a10 repeating-linear-gradient(transparent 0 2px, rgba(0, 0, 0, 0.35) 2px 4px);
+      color: #9fe8ff; text-shadow: 0 0 6px rgba(120, 220, 255, 0.8);
+      font: 1.6rem/1.25 "VT323", Consolas, Menlo, monospace; text-transform: uppercase;
+    }
+    html[data-theme="wargames"] main::before {
+      content: "SHALL WE PLAY A GAME?"; display: block; width: 21ch; overflow: hidden; white-space: nowrap;
+      margin-bottom: 1.25em; animation: type 2.4s steps(21) both;
+    }
+    @keyframes type { from { width: 0; } }
+    html[data-theme="wargames"] h1, html[data-theme="wargames"] .content { animation: appear 0.01s 2.8s both; }
+    html[data-theme="wargames"] h1 { font: inherit; margin: 0 0 1.25em; }
+    html[data-theme="wargames"] .links li { margin: 0 0 1.25em; }
+    html[data-theme="wargames"] .links a { color: inherit; font-weight: normal; text-decoration: none; }
+    html[data-theme="wargames"] .links a:hover, html[data-theme="wargames"] .links a:focus-visible { background: #9fe8ff; color: #020a10; text-shadow: none; outline: none; }
+    html[data-theme="wargames"] .links span { opacity: 0.75; font-size: inherit; padding-left: 2ch; }
+    html[data-theme="wargames"] .prompt { display: block; margin: 0; }
+    html[data-theme="wargames"] .prompt::after { content: "\2588"; animation: blink 1s steps(1) infinite; }
+    html[data-theme="wargames"] #themes { text-shadow: none; }
+
+    /* ---------- Tron ---------- */
+    html[data-theme="tron"] { color-scheme: dark; }
+    html[data-theme="tron"] body {
+      max-width: 42rem; padding: 4rem 1.25rem 45vh; min-height: 100vh; box-sizing: border-box; overflow-x: hidden;
+      background: #00060a; color: #bff;
+      font: 1rem/1.6 "Orbitron", "Eurostile", "Avenir Next", sans-serif; text-transform: uppercase; letter-spacing: 0.12em;
+    }
+    html[data-theme="tron"] body::before {
+      content: ""; position: fixed; left: -50vw; right: -50vw; bottom: 0; height: 40vh; z-index: -1;
+      background:
+        linear-gradient(#0ff 2px, transparent 2px) 0 0 / 100% 3rem,
+        linear-gradient(90deg, #0ff 2px, transparent 2px) 50% 0 / 3rem 100%;
+      transform: perspective(20rem) rotateX(62deg); transform-origin: 50% 100%; opacity: 0.55;
+      -webkit-mask-image: linear-gradient(transparent, #000 70%); mask-image: linear-gradient(transparent, #000 70%);
+    }
+    html[data-theme="tron"] h1 { margin: 0 0 2rem; font-size: 2rem; font-weight: 700; line-height: 1.2; color: #fff; text-shadow: 0 0 0.5rem #0ff, 0 0 1.5rem #0ff; }
+    html[data-theme="tron"] .links li { margin: 0 0 1.5rem; }
+    html[data-theme="tron"] .links a {
+      display: inline-block; padding: 0.4rem 1rem; border: 2px solid #0ff; border-radius: 0.25rem;
+      color: #0ff; font-weight: 700; text-decoration: none;
+      box-shadow: 0 0 0.6rem #0ff, inset 0 0 0.6rem rgba(0, 255, 255, 0.5);
+    }
+    html[data-theme="tron"] .links a:hover, html[data-theme="tron"] .links a:focus-visible { background: #0ff; color: #000; outline: none; }
+    html[data-theme="tron"] .links span { margin-top: 0.5rem; opacity: 0.8; font-size: 0.8rem; }
+    html[data-theme="tron"] #theme-button { color: #0ff; opacity: 0.7; }
+    html[data-theme="tron"] #theme-menu { background: #00060a; color: #0ff; border-color: #0ff; font-size: 0.75rem; box-shadow: 0 0 0.6rem #0ff; }
+    html[data-theme="tron"] #theme-menu button:hover, html[data-theme="tron"] #theme-menu button:focus-visible { background: #0ff; color: #000; }
+
+    /* ---------- Alien ---------- */
+    html[data-theme="alien"] { color-scheme: dark; }
+    html[data-theme="alien"] body {
+      max-width: 46rem; padding: 3.5rem 1.25rem;
+      background: #020602 repeating-linear-gradient(transparent 0 2px, rgba(0, 0, 0, 0.4) 2px 4px);
+      color: #4f6; text-shadow: 0 0 5px rgba(60, 255, 100, 0.6);
+      font: 1.5rem/1.3 "VT323", Consolas, Menlo, monospace; text-transform: uppercase; letter-spacing: 0.12em;
+    }
+    html[data-theme="alien"] main { border: 2px solid #4f6; }
+    html[data-theme="alien"] main::before { content: "INTERFACE 2037 READY FOR INQUIRY"; display: block; padding: 0.4rem 1rem; }
+    html[data-theme="alien"] h1 { font: inherit; margin: 0; padding: 0.4rem 1rem; background: #4f6; color: #020602; text-shadow: none; }
+    html[data-theme="alien"] .content { padding: 1rem; }
+    html[data-theme="alien"] .links li { margin: 0 0 1.3em; }
+    html[data-theme="alien"] .links a { color: inherit; font-weight: normal; text-decoration: none; }
+    html[data-theme="alien"] .links a::before { content: "> "; }
+    html[data-theme="alien"] .links a:hover, html[data-theme="alien"] .links a:focus-visible { background: #4f6; color: #020602; text-shadow: none; outline: none; }
+    html[data-theme="alien"] .links span { opacity: 0.7; font-size: inherit; padding-left: 1.3em; }
+    html[data-theme="alien"] .prompt { display: block; margin: 0; }
+    html[data-theme="alien"] .prompt::before { content: "ENTER QUERY: "; }
+    html[data-theme="alien"] .prompt::after { content: "\2588"; animation: blink 1s steps(1) infinite; }
+    html[data-theme="alien"] #themes { text-shadow: none; letter-spacing: 0; }
+
+    /* ---------- Blade Runner ---------- */
+    html[data-theme="bladerunner"] { color-scheme: dark; }
+    html[data-theme="bladerunner"] body {
+      max-width: 44rem; padding: 4.5rem 1.25rem; min-height: 100vh; box-sizing: border-box;
+      background-color: #0b0703;
+      background-image: linear-gradient(rgba(255, 170, 40, 0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 170, 40, 0.12) 1px, transparent 1px);
+      background-size: 3rem 3rem;
+      color: #ffb347; text-shadow: 0 0 6px rgba(255, 150, 30, 0.6);
+      font: 1rem/1.6 "Share Tech Mono", Menlo, Consolas, monospace; text-transform: uppercase; letter-spacing: 0.1em;
+    }
+    html[data-theme="bladerunner"] body::before { content: "ZM 0030   NS 0044"; white-space: pre; position: fixed; top: 1rem; left: 1.25rem; font-size: 0.8rem; opacity: 0.8; }
+    html[data-theme="bladerunner"] body::after {
+      position: fixed; bottom: 1rem; right: 1.25rem; font-size: 0.8rem; opacity: 0.8;
+      counter-reset: a var(--tick-a) b var(--tick-b); content: "ENHANCE " counter(a) " TO " counter(b);
+      animation: esper 9s steps(60) infinite alternate;
+    }
+    @keyframes esper { from { --tick-a: 224; --tick-b: 176; } to { --tick-a: 34; --tick-b: 46; } }
+    html[data-theme="bladerunner"] main { padding: 1.5rem; border: 1px solid #ffb347; background: rgba(11, 7, 3, 0.85); }
+    html[data-theme="bladerunner"] main::before { content: "ESPER  //  TRACK 45 RIGHT"; white-space: pre-wrap; display: block; margin-bottom: 1rem; font-size: 0.8rem; opacity: 0.7; }
+    html[data-theme="bladerunner"] h1 { margin: 0 0 1.5rem; font-size: 1.6rem; font-weight: normal; }
+    html[data-theme="bladerunner"] .links a { color: #fff3d6; font-weight: normal; text-decoration: none; border-bottom: 1px dashed; }
+    html[data-theme="bladerunner"] .links a:hover, html[data-theme="bladerunner"] .links a:focus-visible { background: #ffb347; color: #0b0703; text-shadow: none; outline: none; }
+    html[data-theme="bladerunner"] .links span { opacity: 0.8; font-size: 0.85rem; }
+    html[data-theme="bladerunner"] #themes { text-shadow: none; }
+
+    /* ---------- The Terminator ---------- */
+    html[data-theme="terminator"] { color-scheme: dark; }
+    html[data-theme="terminator"] body {
+      max-width: none; margin: 0; padding: 3rem 1.5rem; min-height: 100vh; box-sizing: border-box;
+      background: repeating-linear-gradient(transparent 0 2px, rgba(0, 0, 0, 0.25) 2px 4px), radial-gradient(ellipse at center, #c00000, #6a0000 60%, #2a0000) fixed;
+      color: #fff;
+      font: 1.05rem/1.5 "Share Tech Mono", Menlo, Consolas, monospace; text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    html[data-theme="terminator"] main { max-width: 34rem; }
+    html[data-theme="terminator"] main::before { content: "SCAN MODE 43984\A TARGET: FIELD OF VIEW"; white-space: pre; display: block; margin-bottom: 1.5rem; font-size: 0.85rem; opacity: 0.85; }
+    html[data-theme="terminator"] h1 { margin: 0 0 1.5rem; font-size: 1.6rem; font-weight: normal; }
+    html[data-theme="terminator"] h1::before { content: "ID: "; }
+    html[data-theme="terminator"] .links { counter-reset: target; }
+    html[data-theme="terminator"] .links li { counter-increment: target; margin: 0 0 1rem; padding: 0.6rem 0.9rem; border: 1px solid #fff; }
+    html[data-theme="terminator"] .links li::before { content: "TARGET " counter(target, decimal-leading-zero); display: block; font-size: 0.75rem; opacity: 0.8; }
+    html[data-theme="terminator"] .links a { color: #fff; font-size: 1.15rem; font-weight: normal; text-decoration: none; }
+    html[data-theme="terminator"] .links a:hover, html[data-theme="terminator"] .links a:focus-visible { background: #fff; color: #900; outline: none; }
+    html[data-theme="terminator"] .links span { opacity: 0.85; font-size: 0.85rem; }
+    html[data-theme="terminator"] .links span::before { content: "ANALYSIS: "; }
+    html[data-theme="terminator"] body::after {
+      content: "LDA #$00\A STA $C050\A JSR $FDED\A LDX #$08\A DEX\A BNE $0312\A LDA $C000\A BPL $0318\A STA $C010\A CMP #$9B\A BEQ $0340\A JSR $FB1E\A TYA\A CLC\A ADC #$20\A STA $06\A LDA #$04\A STA $07\A LDY #$00\A LDA ($06),Y\A EOR #$80\A STA ($06),Y\A INY\A CPY #$28\A BCC $0332\A RTS\A JMP $0300";
+      white-space: pre; position: fixed; top: 3.5rem; bottom: 0; right: 1.5rem; box-sizing: border-box; overflow: hidden;
+      padding-top: 100vh; font-size: 0.8rem; line-height: 1.4; opacity: 0.7; pointer-events: none;
+      animation: code 14s steps(50) infinite;
+    }
+    @keyframes code { to { padding-top: 0; } }
+    @media (max-width: 48rem) {
+      html[data-theme="terminator"] body::after { display: none; }
+    }
+
+    /* ---------- Back to the Future ---------- */
+    html[data-theme="bttf"] { color-scheme: dark; }
+    html[data-theme="bttf"] body {
+      max-width: 36rem; padding: 3.5rem 1.25rem; background: #141416; color: #ddd;
+      font: 0.8rem/1.4 "Helvetica Neue", Arial, sans-serif; text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    html[data-theme="bttf"] main { padding: 1.25rem; background: linear-gradient(#3a3a3d, #262628); border: 2px solid #555; border-radius: 0.5rem; box-shadow: 0 0.5rem 2rem #000; }
+    html[data-theme="bttf"] h1, html[data-theme="bttf"] .links a {
+      display: block; margin: 0; padding: 0.6rem 0.75rem; background: #0a0000; border: 3px solid #111; border-radius: 0.2rem;
+      box-shadow: inset 0 0 0.6rem #000; overflow-wrap: anywhere;
+      font: 1.5rem/1.3 "DSEG14", "Courier New", monospace; letter-spacing: 0.04em; text-decoration: none;
+    }
+    html[data-theme="bttf"] h1 { margin-bottom: 1.5rem; color: #ff3b1f; text-shadow: 0 0 0.5rem #f00; }
+    html[data-theme="bttf"] .links span {
+      display: table; margin: 0.4rem auto 1.5rem; padding: 0.1rem 0.6rem; border-radius: 2px;
+      background: #8a1c12; color: #fff; opacity: 1; font-size: 0.7rem; font-weight: 700; text-align: center;
+    }
+    html[data-theme="bttf"] .links li { margin: 0; }
+    html[data-theme="bttf"] .links li:last-child span { margin-bottom: 0; }
+    html[data-theme="bttf"] .links li:nth-child(3n+1) a { color: #5f3; text-shadow: 0 0 0.5rem #3f0; }
+    html[data-theme="bttf"] .links li:nth-child(3n+2) a { color: #fc3; text-shadow: 0 0 0.5rem #f90; }
+    html[data-theme="bttf"] .links li:nth-child(3n) a { color: #ff3b1f; text-shadow: 0 0 0.5rem #f00; }
+    html[data-theme="bttf"] .links a:hover, html[data-theme="bttf"] .links a:focus-visible { filter: brightness(1.5); outline: none; }
   </style>
 </head>
 <body>
   <div id="themes">
     <button id="theme-button" type="button" aria-label="Change theme" title="Change theme" aria-expanded="false" aria-controls="theme-menu">&#9680;</button>
-    <!-- To add a theme: add a button here, and a block of html[data-theme="name"] rules in the styles above. -->
+    <!-- To add a theme: add a button here, its name to the themes list in the script at the top, and a block of html[data-theme="name"] rules in the styles. -->
     <div id="theme-menu" hidden>
+      <button type="button" data-theme="random">Random</button>
       <button type="button" data-theme="plain">Plain</button>
       <button type="button" data-theme="dos">MS-DOS 5.0</button>
       <button type="button" data-theme="win95">Windows 95</button>
+      <button type="button" data-theme="mac">Macintosh 1984</button>
+      <button type="button" data-theme="c64">Commodore 64</button>
+      <button type="button" data-theme="teletext">Teletext</button>
       <button type="button" data-theme="trek">Star Trek</button>
+      <button type="button" data-theme="starwars">Star Wars</button>
+      <button type="button" data-theme="wargames">WarGames</button>
+      <button type="button" data-theme="tron">Tron</button>
+      <button type="button" data-theme="alien">Alien</button>
+      <button type="button" data-theme="bladerunner">Blade Runner</button>
+      <button type="button" data-theme="terminator">The Terminator</button>
+      <button type="button" data-theme="bttf">Back to the Future</button>
     </div>
   </div>
 
   <main>
     <h1>Jorge Pereira</h1>
     <div class="content">
-      <p class="tagline">Things I've been making.</p>
-
       <!-- To add a link, copy one <li> block and change the address, name and description. -->
       <ul class="links">
         <li>
@@ -190,31 +494,54 @@
 
   <script>
     (function () {
-      // Web fonts are fetched only when their theme is picked.
+      // Web fonts are fetched only when their theme is shown.
       var fonts = {
-        dos: 'https://fonts.googleapis.com/css2?family=VT323&display=swap',
-        trek: 'https://fonts.googleapis.com/css2?family=Antonio:wght@400;700&display=swap'
+        dos: 'VT323',
+        teletext: 'VT323',
+        wargames: 'VT323',
+        alien: 'VT323',
+        trek: 'Antonio:wght@400;700',
+        starwars: 'Libre+Franklin:wght@400;700',
+        tron: 'Orbitron:wght@400;700',
+        bladerunner: 'Share+Tech+Mono',
+        terminator: 'Share+Tech+Mono',
+        c64: 'Sixtyfour'
       };
+      var state = window.themeState;
       var root = document.documentElement;
       var button = document.getElementById('theme-button');
       var menu = document.getElementById('theme-menu');
       var choices = menu.querySelectorAll('button');
 
-      function apply(theme, save) {
-        if (!menu.querySelector('[data-theme="' + theme + '"]')) theme = 'plain';
-        if (theme === 'plain') root.removeAttribute('data-theme');
-        else root.setAttribute('data-theme', theme);
-        if (fonts[theme] && !document.getElementById('font-' + theme)) {
+      // choice is a theme name or "random"; shown is the theme on screen.
+      function show(choice, shown) {
+        state.choice = choice;
+        state.shown = shown;
+        if (shown === 'plain') root.removeAttribute('data-theme');
+        else root.setAttribute('data-theme', shown);
+        if (fonts[shown] && !document.getElementById('font-' + fonts[shown])) {
           var link = document.createElement('link');
-          link.id = 'font-' + theme;
+          link.id = 'font-' + fonts[shown];
           link.rel = 'stylesheet';
-          link.href = fonts[theme];
+          link.href = 'https://fonts.googleapis.com/css2?family=' + fonts[shown] + '&display=swap';
           document.head.appendChild(link);
         }
         choices.forEach(function (c) {
-          c.setAttribute('aria-pressed', String(c.dataset.theme === theme));
+          c.setAttribute('aria-pressed', String(c.dataset.theme === choice));
+          // In random mode, a dot marks the theme that came up.
+          if (choice === 'random' && c.dataset.theme === shown) c.setAttribute('data-shown', '');
+          else c.removeAttribute('data-shown');
         });
-        if (save) { try { localStorage.setItem('theme', theme); } catch (e) {} }
+      }
+
+      function pick(choice) {
+        var shown = choice;
+        if (choice === 'random') {
+          var others = state.themes.filter(function (t) { return t !== state.shown; });
+          shown = others[Math.floor(Math.random() * others.length)];
+        }
+        show(choice, shown);
+        try { localStorage.setItem('theme', choice); } catch (e) {}
       }
 
       function setOpen(open) {
@@ -224,7 +551,7 @@
 
       button.addEventListener('click', function () { setOpen(menu.hidden); });
       choices.forEach(function (c) {
-        c.addEventListener('click', function () { apply(c.dataset.theme, true); });
+        c.addEventListener('click', function () { pick(c.dataset.theme); });
       });
       document.addEventListener('click', function (e) {
         if (!document.getElementById('themes').contains(e.target)) setOpen(false);
@@ -233,7 +560,7 @@
         if (e.key === 'Escape') { setOpen(false); }
       });
 
-      apply(root.getAttribute('data-theme') || 'plain', false);
+      show(state.choice, state.shown);
     })();
   </script>
 </body>
