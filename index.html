@@ -10,8 +10,8 @@
     // The saved choice is used if there is one. Otherwise, or if the choice is
     // "random", each visit gets a random theme.
     (function () {
-      var themes = ['plain', 'dos', 'win95', 'mac', 'c64', 'spectrum', 'cpc', 'teletext', 'tos', 'trek', 'starwars',
-        'wargames', 'tron', 'alien', 'bladerunner', 'terminator', 'bttf'];
+      var themes = ['plain', 'dos', 'nc', 'win95', 'mac', 'c64', 'spectrum', 'cpc', 'gameboy', 'teletext', 'tos', 'trek', 'starwars',
+        'wargames', 'tron', 'alien', 'bladerunner', 'terminator', 'matrix', 'bttf'];
       var choice = null;
       try { choice = localStorage.getItem('theme'); } catch (e) {}
       if (themes.indexOf(choice) < 0) choice = 'random';
@@ -547,6 +547,103 @@
     @media (max-width: 40rem) {
       html[data-theme="cpc"] body { padding: 1rem 0.75rem; font-size: 0.55rem; }
     }
+    /* ---------- Norton Commander ---------- */
+    html[data-theme="nc"] { color-scheme: dark; }
+    html[data-theme="nc"] body {
+      max-width: none; margin: 0; padding: 1.2em 0 2.4em; min-height: 100vh; box-sizing: border-box;
+      background: #0000aa; color: #55ffff;
+      font: 1.4rem/1.2 "VT323", Consolas, Menlo, monospace;
+    }
+    html[data-theme="nc"] body::before, html[data-theme="nc"] body::after {
+      white-space: pre; overflow: hidden; position: fixed; left: 0; right: 0; z-index: 5;
+      height: 1.2em; background: #00aaaa; color: #000;
+    }
+    html[data-theme="nc"] body::before { content: "  Left    Files    Commands    Options    Right"; top: 0; }
+    html[data-theme="nc"] body::after { content: " 1 Help  2 Menu  3 View  4 Edit  5 Copy  6 RenMov  7 Mkdir  8 Delete  9 PullDn  10 Quit"; bottom: 0; }
+    html[data-theme="nc"] main { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr; min-height: calc(100vh - 3.6em); }
+    html[data-theme="nc"] h1 {
+      grid-column: 1; margin: 0; padding: 0 0.5em; border: 4px double #55ffff; border-bottom: 0;
+      font: inherit; text-align: center; text-transform: uppercase;
+    }
+    html[data-theme="nc"] h1::before { content: "C:\\"; }
+    html[data-theme="nc"] .content { grid-column: 1; padding: 0 0.5em 0.3em; border: 4px double #55ffff; border-top: 0; }
+    html[data-theme="nc"] main::after {
+      content: "C:\\\A Name\A ..\A DOS\A GAMES\A NC\A autoexec.bat\A command.com\A config.sys"; white-space: pre;
+      grid-column: 2; grid-row: 1 / 3; padding: 0 0.5em; border: 4px double #55ffff;
+    }
+    html[data-theme="nc"] .links::before { content: "Name"; display: block; text-align: center; color: #ffff55; }
+    html[data-theme="nc"] .links li { margin: 0 0 0.6em; }
+    html[data-theme="nc"] .links a { display: block; color: #55ffff; font-weight: normal; text-decoration: none; }
+    html[data-theme="nc"] .links a:hover, html[data-theme="nc"] .links a:focus-visible { background: #00aaaa; color: #000; outline: none; }
+    html[data-theme="nc"] .links span { opacity: 1; font-size: inherit; color: #fff; padding-left: 2ch; }
+    html[data-theme="nc"] .prompt {
+      display: block; position: fixed; left: 0; right: 0; bottom: 1.2em; z-index: 5;
+      margin: 0; padding: 0 0.25em; background: #000; color: #aaa;
+    }
+    html[data-theme="nc"] .prompt::before { content: "C:\\>"; }
+    html[data-theme="nc"] .prompt::after { content: "_"; animation: blink 1s steps(1) infinite; }
+    html[data-theme="nc"] #themes { top: 0; right: 0.25rem; }
+    html[data-theme="nc"] #theme-button { opacity: 1; color: #000; padding: 0.15rem 0.5rem; }
+    html[data-theme="nc"] #theme-menu { margin-top: 0; background: #00aaaa; color: #000; border: 4px double #000; font-size: inherit; }
+    html[data-theme="nc"] #theme-menu button:hover, html[data-theme="nc"] #theme-menu button:focus-visible { background: #000; color: #55ffff; }
+    @media (max-width: 40rem) {
+      html[data-theme="nc"] main { grid-template-columns: 1fr; }
+      html[data-theme="nc"] main::after { display: none; }
+    }
+
+    /* ---------- Game Boy ---------- */
+    html[data-theme="gameboy"] { color-scheme: light; background: #4a4a55; }
+    html[data-theme="gameboy"]::before {
+      content: "DOT MATRIX WITH STEREO SOUND"; position: absolute; top: 1.1rem; left: 2.5rem;
+      color: #b8b8c8; font: 0.6rem/1 system-ui, sans-serif; letter-spacing: 0.15em;
+    }
+    html[data-theme="gameboy"] body {
+      max-width: none; margin: 3rem 2.5rem 2.5rem; padding: 0 1.5rem 2rem; min-height: calc(100vh - 5.5rem); box-sizing: border-box;
+      background: #9bbc0f linear-gradient(rgba(15, 56, 15, 0.07) 1px, transparent 1px) 0 0 / 100% 4px;
+      color: #0f380f; border-radius: 0.5rem 0.5rem 2.5rem 0.5rem; box-shadow: inset 0 0 1.5rem rgba(15, 56, 15, 0.35);
+      font: 0.85rem/1.8 "Press Start 2P", monospace;
+    }
+    html[data-theme="gameboy"] main { overflow: hidden; padding-top: 3rem; }
+    html[data-theme="gameboy"] h1 { margin: 0 0 2rem; font: inherit; font-size: 1.3rem; animation: drop 2.4s steps(24) both; }
+    @keyframes drop { from { transform: translateY(-6rem); } }
+    html[data-theme="gameboy"] .content { animation: appear 0.01s 2.8s both; }
+    html[data-theme="gameboy"] .links li { margin: 0 0 1.5rem; }
+    html[data-theme="gameboy"] .links a { color: #0f380f; font-weight: normal; text-decoration: none; }
+    html[data-theme="gameboy"] .links a::before { content: "\25B6"; margin-right: 0.5em; visibility: hidden; }
+    html[data-theme="gameboy"] .links a:hover, html[data-theme="gameboy"] .links a:focus-visible { background: #0f380f; color: #9bbc0f; outline: none; }
+    html[data-theme="gameboy"] .links a:hover::before, html[data-theme="gameboy"] .links a:focus-visible::before { visibility: visible; }
+    html[data-theme="gameboy"] .links span { opacity: 1; color: #306230; font-size: 0.7rem; padding-left: 2.2em; }
+    html[data-theme="gameboy"] #theme-button { opacity: 0.8; color: #d8d8e4; }
+    html[data-theme="gameboy"] #theme-menu { background: #9bbc0f; color: #0f380f; border: 2px solid #0f380f; font-size: 0.6rem; }
+    html[data-theme="gameboy"] #theme-menu button:hover, html[data-theme="gameboy"] #theme-menu button:focus-visible { background: #0f380f; color: #9bbc0f; }
+    @media (max-width: 40rem) {
+      html[data-theme="gameboy"]::before { left: 1rem; }
+      html[data-theme="gameboy"] body { margin: 2.5rem 1rem 1rem; padding: 0 0.75rem 1.5rem; min-height: calc(100vh - 3.5rem); font-size: 0.6rem; }
+      html[data-theme="gameboy"] h1 { font-size: 0.9rem; }
+      html[data-theme="gameboy"] .links span { font-size: 0.55rem; }
+    }
+
+    /* ---------- The Matrix ---------- */
+    html[data-theme="matrix"] { color-scheme: dark; }
+    html[data-theme="matrix"] body {
+      max-width: 42rem; padding: 4rem 1.25rem; background: #000; color: #00ff41; text-shadow: 0 0 6px rgba(0, 255, 65, 0.7);
+      font: 1.1rem/1.6 "Share Tech Mono", Menlo, Consolas, monospace;
+    }
+    #rain { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.5; }
+    html[data-theme="matrix"] main { padding: 1.5rem; background: rgba(0, 0, 0, 0.8); border: 1px solid rgba(0, 255, 65, 0.4); }
+    html[data-theme="matrix"] main::before {
+      content: "Wake up..."; display: block; width: 10ch; overflow: hidden; white-space: nowrap;
+      margin-bottom: 1.5rem; animation: type 1.6s steps(10) both;
+    }
+    html[data-theme="matrix"] h1, html[data-theme="matrix"] .content { animation: appear 0.01s 2s both; }
+    html[data-theme="matrix"] h1 { margin: 0 0 1.5rem; font-size: 1.6rem; font-weight: normal; color: #d0ffd8; }
+    html[data-theme="matrix"] .links a { color: #d0ffd8; font-weight: normal; text-decoration: none; }
+    html[data-theme="matrix"] .links a::before { content: "> "; color: #00ff41; }
+    html[data-theme="matrix"] .links a:hover, html[data-theme="matrix"] .links a:focus-visible { background: #00ff41; color: #000; text-shadow: none; outline: none; }
+    html[data-theme="matrix"] .links span { opacity: 0.8; font-size: 0.9rem; padding-left: 2ch; }
+    html[data-theme="matrix"] .prompt { display: block; margin: 0; }
+    html[data-theme="matrix"] .prompt::after { content: "\2588"; animation: blink 1s steps(1) infinite; }
+    html[data-theme="matrix"] #themes { text-shadow: none; }
   </style>
 </head>
 <body>
@@ -557,11 +654,13 @@
       <button type="button" data-theme="random">Random</button>
       <button type="button" data-theme="plain">Plain</button>
       <button type="button" data-theme="dos">MS-DOS 5.0</button>
+      <button type="button" data-theme="nc">Norton Commander</button>
       <button type="button" data-theme="win95">Windows 95</button>
       <button type="button" data-theme="mac">Macintosh 1984</button>
       <button type="button" data-theme="c64">Commodore 64</button>
       <button type="button" data-theme="spectrum">ZX Spectrum</button>
       <button type="button" data-theme="cpc">Amstrad CPC 464</button>
+      <button type="button" data-theme="gameboy">Game Boy</button>
       <button type="button" data-theme="teletext">Teletext</button>
       <button type="button" data-theme="tos">Star Trek: The Original Series</button>
       <button type="button" data-theme="trek">Star Trek: The Next Generation</button>
@@ -571,6 +670,7 @@
       <button type="button" data-theme="alien">Alien</button>
       <button type="button" data-theme="bladerunner">Blade Runner</button>
       <button type="button" data-theme="terminator">The Terminator</button>
+      <button type="button" data-theme="matrix">The Matrix</button>
       <button type="button" data-theme="bttf">Back to the Future</button>
     </div>
   </div>
@@ -609,7 +709,10 @@
         c64: 'Sixtyfour',
         spectrum: 'DotGothic16',
         cpc: 'Press+Start+2P',
-        tos: 'Jost:ital,wght@0,500;1,700'
+        tos: 'Jost:ital,wght@0,500;1,700',
+        nc: 'VT323',
+        gameboy: 'Press+Start+2P',
+        matrix: 'Share+Tech+Mono'
       };
       var state = window.themeState;
       var root = document.documentElement;
@@ -617,12 +720,60 @@
       var menu = document.getElementById('theme-menu');
       var choices = menu.querySelectorAll('button');
 
+      // The falling characters behind The Matrix theme, drawn on a canvas.
+      var rain = null;
+      function startRain() {
+        if (rain) return;
+        var canvas = document.createElement('canvas');
+        canvas.id = 'rain';
+        canvas.setAttribute('aria-hidden', 'true');
+        document.body.insertBefore(canvas, document.body.firstChild);
+        var ctx = canvas.getContext('2d');
+        var size = 16;
+        var glyphs = '\uFF71\uFF72\uFF73\uFF74\uFF75\uFF76\uFF77\uFF78\uFF79\uFF7A\uFF7B\uFF7C\uFF7D\uFF7E\uFF7F\uFF80\uFF81\uFF82\uFF83\uFF84\uFF85\uFF86\uFF87\uFF88\uFF890123456789';
+        var drops = [];
+        function resize() {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+          drops = [];
+          for (var i = 0; i < canvas.width / size; i++) drops.push(Math.floor(Math.random() * -40));
+        }
+        function draw() {
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = '#00ff41';
+          ctx.font = size + 'px monospace';
+          for (var i = 0; i < drops.length; i++) {
+            ctx.fillText(glyphs.charAt(Math.floor(Math.random() * glyphs.length)), i * size, drops[i] * size);
+            if (drops[i] * size > canvas.height && Math.random() > 0.975) drops[i] = 0;
+            drops[i]++;
+          }
+        }
+        resize();
+        window.addEventListener('resize', resize);
+        var timer = null;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          for (var n = 0; n < 120; n++) draw(); // a still picture instead of motion
+        } else {
+          timer = setInterval(draw, 60);
+        }
+        rain = function () {
+          if (timer) clearInterval(timer);
+          window.removeEventListener('resize', resize);
+          canvas.remove();
+        };
+      }
+      function stopRain() {
+        if (rain) { rain(); rain = null; }
+      }
+
       // choice is a theme name or "random"; shown is the theme on screen.
       function show(choice, shown) {
         state.choice = choice;
         state.shown = shown;
         if (shown === 'plain') root.removeAttribute('data-theme');
         else root.setAttribute('data-theme', shown);
+        if (shown === 'matrix') startRain(); else stopRain();
         if (fonts[shown] && !document.getElementById('font-' + fonts[shown])) {
           var link = document.createElement('link');
           link.id = 'font-' + fonts[shown];
